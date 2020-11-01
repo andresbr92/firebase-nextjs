@@ -14,9 +14,27 @@ const useValidacion = (stateInicial, validar, fn) => {
             }
             guardarSubmitForm(false)
         }
-    },[])
+    }, [])
+    
+    const handleChange = e => {
+        guardarValores({
+            ...valores,
+            [e.target.name]: e.target.value
+        })
+    }
+    const handleForSubmit = e => {
+        e.preventDefault()
+        const erroresValidacion = validar(valores)
+        guardarSubmitForm(true)
+    }
 
-    return (  );
+    return {
+        valores,
+        errores,
+        submitForm,
+        handleChange,
+        handleForSubmit,
+    }
 }
  
 export default useValidacion;
