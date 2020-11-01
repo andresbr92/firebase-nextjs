@@ -14,7 +14,10 @@ function useAutenticacion() {
             }
         })
         return () => unsuscribe()
-    },[])
+    }, [])
+    
+
+    return usuarioAutenticado
 
 }
 
