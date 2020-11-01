@@ -1,13 +1,28 @@
 import React from 'react';
-import Link from 'next/link'
+import Header from './Header'
+import { Global, css } from '@emotion/core'
+
+
 const Layout = (props) => {
     return (
         <>
-            <h1>Header</h1>
-            <nav>
-                <Link href='/' >Inicio</Link>
-                <Link href='/nosotros'>Nosotros</Link>
-            </nav>
+            <Global
+                styles={css`
+                    :root{
+                        --gris: #3d3d3d;
+                        --gris2: #6F6F6F;
+                        --naranja: #DA552F
+                    }
+                    html {
+                        font-size:62.5%large;
+                        box-sizing: border-box;
+                    }
+                    *,*:before, *after {
+                        box-sizing:inherit
+                    }
+                `}
+            />
+            <Header/>
             <main>
                 {props.children}
             </main>
