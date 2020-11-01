@@ -35,6 +35,11 @@ const useValidacion = (stateInicial, validar, fn) => {
         guardarSubmitForm(true);
     }
 
+    const handleBlur = () => { 
+        const erroresValidacion = validar(valores)
+        guardarErrores(erroresValidacion)
+    }
+
 
     
 
@@ -43,6 +48,7 @@ const useValidacion = (stateInicial, validar, fn) => {
         errores,
         handleSubmit,
         handleChange,
+        handleBlur
     }
 }
 

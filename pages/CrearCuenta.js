@@ -17,7 +17,7 @@ const STATE_INICIAL = {
 }
 const CrearCuenta = () => {
 
-    const { valores, errores, submitForm, handleChange, handleSubmit, } = useValidacion(STATE_INICIAL, validarCrearCuenta, crearCuenta)
+    const { valores, errores, handleChange, handleSubmit, handleBlur } = useValidacion(STATE_INICIAL, validarCrearCuenta, crearCuenta)
     
     const {nombre, email, password} = valores
     
@@ -47,6 +47,7 @@ const CrearCuenta = () => {
                             name='nombre'
                             value={nombre}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                         />
                     </Campo>
                     {errores.nombre && <Error>{errores.nombre}</Error>}
@@ -60,6 +61,7 @@ const CrearCuenta = () => {
                             name='email'
                             value={email}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                         />
                     </Campo>
                     {errores.email && <Error>{errores.email}</Error>}
@@ -73,6 +75,7 @@ const CrearCuenta = () => {
                             name='password'
                             value={password}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                         />
                     </Campo>
                     {errores.password && <Error>{errores.password}</Error>}
