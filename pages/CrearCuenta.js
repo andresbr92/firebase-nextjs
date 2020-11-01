@@ -2,7 +2,7 @@ import React from 'react';
 import {css} from '@emotion/core'
 
 import Layout from '../components/Layout/Layout'
-import {Formulario, Campo, InputSubmit} from '../components/ui/Formulario'
+import { Formulario, Campo, InputSubmit } from '../components/ui/Formulario'
 
 
 const CrearCuenta = () => {
