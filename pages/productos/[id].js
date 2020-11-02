@@ -34,6 +34,7 @@ const Producto = () => {
     //state del componente
     const [producto, guardarProducto] = useState({})
     const [error, guardarError] = useState(false)
+    const [comentario, guardarComentario] = useState({})
 
 
     //routing para obtener el id de la url
@@ -58,7 +59,7 @@ const Producto = () => {
             }
             obetenerProducto()
         }
-    }, [id,producto])
+    }, [id, producto])
 
 
 
@@ -82,16 +83,48 @@ const Producto = () => {
 
         //verificar si el usuario ha votado
         if (haVotado.includes(usuario.uid)) return
-        
+
         //guardar el id del usuario que ha votado
         const nuevoHaVotado = [...haVotado, usuario.uid]
         //actualizar en base de datos
-        firebase.db.collection('productos').doc(id).update({ votos: nuevoTotal, haVotado:nuevoHaVotado})
+        firebase.db.collection('productos').doc(id).update({ votos: nuevoTotal, haVotado: nuevoHaVotado })
 
         //actualizar el state
         guardarProducto({
             ...producto,
             votos: nuevoTotal
+        })
+    }
+
+
+    const comentarioChange = e => {
+        guardarComentario({
+            ...comentario,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const agregarComentario = e => {
+        e.preventDefault()
+        if (!usuario) {
+            return router.push('/Login')
+        }
+
+        //informacion extra al comentario
+        comentario.usuarioId = usuario.uid
+        comentario.usuarioNombre = usuario.displayName
+
+        //copa de comentario y agregarlos al array
+        const nuevosComentarios = [...comentarios, comentario]
+        //actualizar la bbdd
+        firebase.db.collection('productos').doc(id).update({
+            comentarios: nuevosComentarios
+        })
+
+        //actualizar el state
+        guardarProducto({
+            ...producto,
+            comentarios: nuevosComentarios
         })
     }
 
@@ -116,11 +149,14 @@ const Producto = () => {
 
                             {usuario && (<>
                                 <h2>Agrega tu comentario</h2>
-                                <form>
+                                <form
+                                    onSubmit={agregarComentario}
+                                >
                                     <Campo>
                                         <input
                                             type='text'
                                             name='mensaje'
+                                            onChange={comentarioChange}
                                         />
                                     </Campo>
                                     <InputSubmit
@@ -135,13 +171,31 @@ const Producto = () => {
                                     margin-top:2rem 0;
                                 `}
                             >Comentarios</h2>
-                            {comentarios.map(comentario => (
-                                <li>
-                                    <p>{comentario.nombre}</p>
-                                    <p>Escrito por: {comentario.usuarioNombre}</p>
-                                </li>
+                            {comentarios.length === 0 ? <p>Aun no hay comentarios</p> : (
+                                <ul>
+                                    {comentarios.map((comentario, i) => (
+                                        <li
+                                            key={`${comentario.usuarioId}-${i}`}
+                                            css={css`
+                                                border: 1px solid #e1e1e1;
+                                                padding:1rem;
+                                            `}
+                                        >
+                                            <p>{comentario.mensaje}</p>
+                                            <p>Escrito por: 
+                                             <span
+                                                    css={css`
+                                                        font-weight:bold;
+                                                    `}
+                                                > {comentario.usuarioNombre}</span>
+                                            </p>
+                                        </li>
 
-                            ))}
+                                    ))}
+
+                                </ul>
+                            )}
+
                         </div>
                         <aside>
                             <Boton
@@ -149,7 +203,7 @@ const Producto = () => {
                                 bgColor='true'
                                 href={url}
                             >Visitar URL</Boton>
-                            
+
                             <div
                                 css={css`
                                     margin-top: 5rem;
