@@ -27,7 +27,7 @@ const NuevoProducto = () => {
 
     const { valores, errores, handleChange, handleSubmit, handleBlur } = useValidacion(STATE_INICIAL, validarCrearProducto, crearProducto)
 
-    const { nombre, empresa, url, descripcion } = valores
+    const { nombre, empresa, imagen, url, descripcion } = valores
 
     //hook de routing para redireccionar
 
