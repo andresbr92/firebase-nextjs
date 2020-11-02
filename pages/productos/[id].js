@@ -103,7 +103,7 @@ const Producto = () => {
             [e.target.name]: e.target.value
         })
     }
-
+    //crear comentarios
     const agregarComentario = e => {
         e.preventDefault()
         if (!usuario) {
@@ -126,6 +126,10 @@ const Producto = () => {
             ...producto,
             comentarios: nuevosComentarios
         })
+    }
+    //identificar si el comentario es del creador del producto
+    const esCreador = id => {
+        if(creador.id == id) return true
     }
 
     return (
@@ -189,6 +193,7 @@ const Producto = () => {
                                                     `}
                                                 > {comentario.usuarioNombre}</span>
                                             </p>
+                                            {esCreador(comentario.usuarioId) && <CreadorProducto>Es Creador</CreadorProducto>}
                                         </li>
 
                                     ))}
