@@ -41,7 +41,7 @@ const Producto = () => {
     // const id = router.query.id
     const { query: { id } } = router
     //context de firebase
-    const { firebase } = useContext(FirebaseContext)
+    const { firebase, usuario } = useContext(FirebaseContext)
 
     useEffect(() => {
         if (id) {
@@ -71,7 +71,23 @@ const Producto = () => {
 
     const { comentarios, creado, descripcion, empresa, nombre, url, urlimagen, votos, creador } = producto;
 
+    //administrar y validar los votos
 
+    const votarProducto = () => {
+        if (!usuario) {
+            return router.push('/Login')
+        }
+        //obtener y sumar votos
+        const nuevoTotal = votos + 1
+        //actualizar en base de datos
+        firebase.db.collection('productos').doc(id).update({votos:nuevoTotal})
+
+        //actualizar el state
+        guardarProducto({
+            ...producto,
+            votos: nuevoTotal
+        })
+    }
 
     return (
         <Layout>
@@ -91,20 +107,23 @@ const Producto = () => {
                             <p>Por {creador.nombre} de {empresa}</p>
                             <img src={urlimagen} />
                             <p>{descripcion}</p>
-                            <h2>Agrega tu comentario</h2>
-                            <form>
-                                <Campo>
-                                    <input
-                                        type='text'
-                                        name='mensaje'
-                                    />
-                                </Campo>
-                                <InputSubmit
-                                    type='submit'
-                                    value='Agregar Comentario'
-                                />
 
-                            </form>
+                            {usuario && (<>
+                                <h2>Agrega tu comentario</h2>
+                                <form>
+                                    <Campo>
+                                        <input
+                                            type='text'
+                                            name='mensaje'
+                                        />
+                                    </Campo>
+                                    <InputSubmit
+                                        type='submit'
+                                        value='Agregar Comentario'
+                                    />
+
+                                </form>
+                            </>)}
                             <h2
                                 css={css`
                                     margin-top:2rem 0;
@@ -137,7 +156,11 @@ const Producto = () => {
                                     `}
                                 >{votos} Votos</p>
 
-                                <Boton>Votar</Boton>
+                                {usuario && (
+                                    <Boton
+                                        onClick={votarProducto}
+                                    >Votar</Boton>
+                                )}
                             </div>
 
                         </aside>

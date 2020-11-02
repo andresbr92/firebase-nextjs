@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { css } from '@emotion/core'
-import Router, {useRouter} from 'next/router'
+import Router, { useRouter } from 'next/router'
 import FileUploader from 'react-firebase-file-uploader'
 import Layout from '../components/Layout/Layout'
 import { Formulario, Campo, InputSubmit, Error } from '../components/ui/Formulario'
 
 //firebase
-import {FirebaseContext} from '../firebase'
+import { FirebaseContext } from '../firebase'
+import Error404 from '../components/Layout/404'
 
 
 //validaciones
@@ -107,7 +108,7 @@ const NuevoProducto = () => {
     return (
         <div>
             <Layout>
-                <>
+                {!usuario ? <Error404 /> : (<>
                     <h1
                         css={css`
                             text-align:center;
@@ -163,12 +164,12 @@ const NuevoProducto = () => {
                                     onUploadError={handleUploadError}
                                     onUploadSuccess={handleUploadSuccess}
                                     onProgress={handleProgress}
-                                    
+
                                 />
                             </Campo>
 
 
-                    
+
                             <Campo>
                                 <label htmlFor='url' >url</label>
                                 <input
@@ -185,7 +186,7 @@ const NuevoProducto = () => {
                         </fieldset>
                         <fieldset>
                             <legend>Sobre tu producto</legend>
-                             
+
                             <Campo>
                                 <label htmlFor='descripcion' >Descripcion</label>
                                 <textarea
@@ -209,7 +210,8 @@ const NuevoProducto = () => {
                             value='Crear Producto'
                         />
                     </Formulario>
-                </>
+                </>)}
+
             </Layout>
         </div>
     );
