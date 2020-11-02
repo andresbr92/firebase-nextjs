@@ -138,6 +138,26 @@ const Producto = () => {
     const esCreador = id => {
         if (creador.id == id) return true
     }
+    //funcion que revisa que el creador del producto es el mismo que esta logeado
+    const puedeBorrar = () => {
+        if (!usuario) return false
+
+        if(creador.id === usuario.uid) return true
+    }
+    //eliminar producto de la base de datos
+    const eliminarProducto = async () => {
+        if (!usuario) return router.push('/Login')
+
+        if (creador.id === !usuario.uid) return router.push('/Login')
+        try {
+
+            await firebase.db.collection('productos').doc(id).delete()
+            router.push('/')
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <Layout>
@@ -237,6 +257,9 @@ const Producto = () => {
 
                             </aside>
                         </ContenedorProducto>
+                        { puedeBorrar() && <Boton
+                            onClick={eliminarProducto}
+                        >Eliminar producto</Boton>}
 
                     </div>
                 )}
