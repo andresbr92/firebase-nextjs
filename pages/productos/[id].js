@@ -5,6 +5,9 @@ import Error404 from '../../components/Layout/404'
 import Layout from '../../components/Layout/Layout'
 import { css } from '@emotion/core'
 import styled from '@emotion/styled'
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { es } from 'date-fns/locale';
+import { Campo, InputSubmit } from '../../components/ui/Formulario'
 
 const ContenedorProducto = styled.div`
    @media (min-width:768px) {
@@ -83,10 +86,38 @@ const Producto = () => {
                     >{nombre}</h1>
                     <ContenedorProducto>
                         <div>
-1
+                            <p>Publicado hace: {formatDistanceToNow(new Date(creado), { locale: es })} </p>
+                            <img src={urlimagen} />
+                            <p>{descripcion}</p>
+                            <h2>Agrega tu comentario</h2>
+                            <form>
+                                <Campo>
+                                    <input
+                                        type='text'
+                                        name='mensaje'
+                                    />
+                                </Campo>
+                                <InputSubmit
+                                    type='submit'
+                                    value='Agregar Comentario'
+                                />
+
+                            </form>
+                            <h2
+                                css={css`
+                                    margin-top:2rem 0;
+                                `}
+                            >Comentarios</h2>
+                            {comentarios.map(comentario => (
+                                <li>
+                                    <p>{comentario.nombre}</p>
+                                    <p>Escrito por: {comentario.usuarioNombre}</p>
+                                </li>
+
+                            ))}
                         </div>
                         <aside>
-2
+
                         </aside>
                     </ContenedorProducto>
 
