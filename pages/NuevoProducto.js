@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { css } from '@emotion/core'
-import Router from 'next/router'
+import Router, {useRouter} from 'next/router'
 
 import Layout from '../components/Layout/Layout'
 import { Formulario, Campo, InputSubmit, Error } from '../components/ui/Formulario'
 
 //firebase
-import firebase from '../firebase'
+import {FirebaseContext} from '../firebase'
 
 
 //validaciones
 import useValidacion from '../hooks/useValidacion'
-import validarCrearCuenta from '../validaciones/validarCrearCuenta'
+import validarCrearProducto from '../validaciones/validarCrearProducto'
 
 const STATE_INICIAL = {
     nombre: '',
     empresa: '',
-    imagen: '',
+    //imagen: '',
     url: '',
     descripcion: ''
 }
@@ -25,20 +25,39 @@ const STATE_INICIAL = {
 const NuevoProducto = () => {
     const [error, guardarError] = useState(false)
 
-    const { valores, errores, handleChange, handleSubmit, handleBlur } = useValidacion(STATE_INICIAL, validarCrearCuenta, crearCuenta)
+    const { valores, errores, handleChange, handleSubmit, handleBlur } = useValidacion(STATE_INICIAL, validarCrearProducto, crearProducto)
 
-    const { nombre, empresa, imagen, url, descripcion } = valores
+    const { nombre, empresa, url, descripcion } = valores
 
-    async function crearCuenta() {
-        try {
-            await firebase.registrar(nombre, email, password)
-            Router.push('/')
+    //hook de routing para redireccionar
 
-        } catch (error) {
-            console.error('Hubo un error al crear el usuario ', error.message)
-            guardarError(error.message)
+    const router = useRouter()
+    
+    //context con las operaciones CRUD de firebase
+    const {usuario, firebase} = useContext(FirebaseContext)
+
+    async function crearProducto() {
+
+        //si el usuario no esta atutenticado 
+        if (!usuario) {
+            return router.push('/Login')
 
         }
+        //crear el objeto de nuevo producto
+        const producto = {
+            nombre,
+            empresa,
+            url,
+            descripcion,
+            votos: 0,
+            comentarios: [],
+            creado: Date.now()
+        }
+        //insertar en la base de datos 
+
+        firebase.db.collection('productos').add(producto)
+        console.log('estoy llegando hasta aqui',producto)
+       
 
     }
 
@@ -89,7 +108,7 @@ const NuevoProducto = () => {
                             </Campo>
 
                             {errores.empresa && <Error>{errores.empresa}</Error>}
-                            <Campo>
+                            {/* <Campo>
                                 <label htmlFor='imagen' >Imagen</label>
                                 <input
                                     type='file'
@@ -102,13 +121,14 @@ const NuevoProducto = () => {
                             </Campo>
 
 
-                            {errores.imagen && <Error>{errores.imagen}</Error>}
+                            {errores.imagen && <Error>{errores.imagen}</Error>} */}
                             <Campo>
                                 <label htmlFor='url' >url</label>
                                 <input
                                     type='url'
                                     id='url'
                                     name='url'
+                                    placeholder='URL de tu producto'
                                     value={url}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
