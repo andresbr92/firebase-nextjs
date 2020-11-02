@@ -58,7 +58,7 @@ const Producto = () => {
             }
             obetenerProducto()
         }
-    }, [id])
+    }, [id,producto])
 
 
 
@@ -69,7 +69,7 @@ const Producto = () => {
         `}
     >Cargando...</h1> </Layout>
 
-    const { comentarios, creado, descripcion, empresa, nombre, url, urlimagen, votos, creador } = producto;
+    const { comentarios, creado, descripcion, empresa, nombre, url, urlimagen, votos, creador, haVotado } = producto;
 
     //administrar y validar los votos
 
@@ -79,8 +79,14 @@ const Producto = () => {
         }
         //obtener y sumar votos
         const nuevoTotal = votos + 1
+
+        //verificar si el usuario ha votado
+        if (haVotado.includes(usuario.uid)) return
+        
+        //guardar el id del usuario que ha votado
+        const nuevoHaVotado = [...haVotado, usuario.uid]
         //actualizar en base de datos
-        firebase.db.collection('productos').doc(id).update({votos:nuevoTotal})
+        firebase.db.collection('productos').doc(id).update({ votos: nuevoTotal, haVotado:nuevoHaVotado})
 
         //actualizar el state
         guardarProducto({
